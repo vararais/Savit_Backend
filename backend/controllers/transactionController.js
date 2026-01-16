@@ -25,3 +25,21 @@ exports.getHistory = (req, res) => {
         res.json(results);
     });
 };
+
+
+exports.getHistoryByUser = (req, res) => {
+    const { userId } = req.params;
+
+    const query = `
+        SELECT h.history_id, h.nominal, h.tanggal, s.nama_barang 
+        FROM tbl_history h
+        JOIN tbl_stuff s ON h.stuff_id = s.stuff_id
+        WHERE s.user_id = ?
+        ORDER BY h.history_id DESC
+    `;
+
+    db.query(query, [userId], (err, results) => {
+        if (err) return res.status(500).json({ error: err.message });
+        res.json(results);
+    });
+};
